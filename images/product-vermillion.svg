@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 700">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a1a24"/>
+      <stop offset="100%" stop-color="#0f0f18"/>
+    </linearGradient>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c8b07e" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#c8b07e" stop-opacity="0.05"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="30"/></filter>
+  </defs>
+  <rect width="600" height="700" fill="url(#bg)"/>
+  <circle cx="300" cy="400" r="220" fill="url(#g)" filter="url(#glow)"/>
+  <circle cx="200" cy="250" r="100" fill="#c8b07e" opacity="0.05" filter="url(#glow)"/>
+  <g opacity="0.85">
+    <path d="M260 180 L340 180 L360 260 L340 250 Q300 280 260 250 L240 260 Z"
+          fill="none" stroke="#c8b07e" stroke-width="1.2" stroke-opacity="0.5"/>
+    <path d="M280 250 L280 500 Q300 520 320 500 L320 250"
+          fill="none" stroke="#c8b07e" stroke-width="1.5" stroke-opacity="0.6"/>
+    <path d="M240 400 Q300 370 360 400" fill="none" stroke="#c8b07e" stroke-width="0.5" stroke-opacity="0.3"/>
+    <path d="M250 450 Q300 420 350 450" fill="none" stroke="#c8b07e" stroke-width="0.5" stroke-opacity="0.2"/>
+  </g>
+</svg>

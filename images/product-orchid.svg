@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 700">
+  <defs>
+    <linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a1a24"/>
+      <stop offset="100%" stop-color="#0f0f18"/>
+    </linearGradient>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7ecba0" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#7ecba0" stop-opacity="0.05"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="30"/>
+    </filter>
+  </defs>
+  <rect width="600" height="700" fill="url(#bg1)"/>
+  <circle cx="300" cy="350" r="200" fill="url(#g1)" filter="url(#glow)"/>
+  <circle cx="450" cy="200" r="120" fill="#7ecba0" opacity="0.06" filter="url(#glow)"/>
+  <!-- Orchid-inspired silhouette -->
+  <g opacity="0.85">
+    <path d="M240 200 Q280 180 300 190 Q320 180 360 200 L350 240 Q330 220 310 230 L300 550 L290 230 Q270 220 250 240 Z"
+          fill="none" stroke="#7ecba0" stroke-width="1.5" stroke-opacity="0.6"/>
+    <path d="M220 300 Q300 260 380 300" fill="none" stroke="#7ecba0" stroke-width="0.5" stroke-opacity="0.3"/>
+    <path d="M230 350 Q300 320 370 350" fill="none" stroke="#7ecba0" stroke-width="0.5" stroke-opacity="0.2"/>
+    <!-- Orchid petal details -->
+    <path d="M300 190 Q330 160 350 180 Q340 200 300 190" fill="#7ecba0" opacity="0.15"/>
+    <path d="M300 190 Q270 160 250 180 Q260 200 300 190" fill="#7ecba0" opacity="0.15"/>
+  </g>
+</svg>

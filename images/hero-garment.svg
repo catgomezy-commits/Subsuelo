@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f1a14"/>
+      <stop offset="100%" stop-color="#070a08"/>
+    </linearGradient>
+    <linearGradient id="dress" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7ecba0" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#3a8b6f" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#1a3a2a" stop-opacity="0.3"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c8f0e0" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#7ecba0" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="bigGlow">
+      <feGaussianBlur stdDeviation="40"/>
+    </filter>
+  </defs>
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <circle cx="400" cy="500" r="300" fill="url(#glow)" filter="url(#bigGlow)" opacity="0.3"/>
+  <circle cx="350" cy="400" r="150" fill="#7ecba0" opacity="0.08" filter="url(#bigGlow)"/>
+  <circle cx="500" cy="650" r="200" fill="#c8b07e" opacity="0.06" filter="url(#bigGlow)"/>
+  <!-- Floating garment silhouette -->
+  <g filter="url(#softGlow)" opacity="0.9">
+    <!-- Shoulders -->
+    <path d="M280 250 Q320 230 400 240 Q480 230 520 250 L540 300 Q520 280 500 320 L500 620 Q500 720 440 780 L400 810 L360 780 Q300 720 300 620 L300 320 Q280 280 260 300 Z"
+          fill="url(#dress)" stroke="#7ecba0" stroke-width="0.5" stroke-opacity="0.3"/>
+    <!-- Neckline detail -->
+    <path d="M340 260 Q370 280 400 290 Q430 280 460 260" fill="none" stroke="#c8f0e0" stroke-width="1" stroke-opacity="0.4"/>
+    <!-- Waist detail -->
+    <ellipse cx="400" cy="450" rx="100" ry="8" fill="none" stroke="#c8f0e0" stroke-width="0.5" stroke-opacity="0.2"/>
+    <!-- Fold lines -->
+    <path d="M380 500 Q370 600 350 700" fill="none" stroke="#c8f0e0" stroke-width="0.3" stroke-opacity="0.15"/>
+    <path d="M420 500 Q430 600 450 700" fill="none" stroke="#c8f0e0" stroke-width="0.3" stroke-opacity="0.15"/>
+  </g>
+  <!-- Floating particles -->
+  <circle cx="200" cy="300" r="2" fill="#7ecba0" opacity="0.5"/>
+  <circle cx="600" cy="350" r="1.5" fill="#c8f0e0" opacity="0.4"/>
+  <circle cx="250" cy="600" r="2.5" fill="#7ecba0" opacity="0.3"/>
+  <circle cx="550" cy="700" r="1.8" fill="#c8f0e0" opacity="0.35"/>
+  <circle cx="300" cy="800" r="1.2" fill="#7ecba0" opacity="0.4"/>
+  <circle cx="500" cy="250" r="2" fill="#c8f0e0" opacity="0.3"/>
+  <!-- Decorative lines -->
+  <path d="M150 850 Q400 880 650 850" fill="none" stroke="#7ecba0" stroke-width="0.3" stroke-opacity="0.2"/>
+  <path d="M200 870 Q400 890 600 870" fill="none" stroke="#7ecba0" stroke-width="0.3" stroke-opacity="0.15"/>
+</svg>
