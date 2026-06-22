@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NOVICI</title>ADO — Sustainable Fashion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0f;
+      color: #e8e4df;
+      overflow-x: hidden;
+      cursor: none;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* Custom Cursor */
+    .cursor {
+      position: fixed;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #c8f0e0, #7ecba0);
+      pointer-events: none;
+      z-index: 9999;
+      mix-blend-mode: difference;
+      transition: transform 0.08s ease, width 0.3s, height 0.3s;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 30px rgba(126, 203, 160, 0.3);
+    }
+    .cursor-follower {
+      position: fixed;
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      border: 1px solid rgba(200, 240, 224, 0.2);
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.4s ease, width 0.6s, height 0.6s, border-color 0.4s;
+      backdrop-filter: blur(2px);
+    }
+    .cursor-hover {
+      width: 60px !important;
+      height: 60px !important;
+      background: radial-gradient(circle, rgba(200, 240, 224, 0.15), transparent) !important;
+      mix-blend-mode: normal !important;
+    }
+    .cursor-follower-hover {
+      width: 100px !important;
+      height: 100px !important;
+      border-color: rgba(200, 240, 224, 0.4) !important;
+    }
+
+    /* Background Canvas */
+    #bg-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .noise-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0; left: 0; width: 100%;
+      padding: 28px 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      mix-blend-mode: difference;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      color: #fff;
+    }
+    .logo span { color: #7ecba0; }
+    .nav-links { display: flex; gap: 40px; list-style: none; }
+    .nav-links a {
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: #7ecba0;
+      transition: width 0.4s ease;
+    }
+    .nav-links a:hover { color: #fff; }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+    .nav-burger span { width: 24px; height: 1px; background: #fff; transition: all 0.3s; }
+
+    /* Sections Common */
+    section {
+      position: relative;
+      z-index: 2;
+      padding: 120px 60px;
+      min-height: 100vh;
+    }
+    .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(232, 228, 223, 0.4);
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      font-weight: 400;
+      line-height: 1.15;
+      margin-bottom: 60px;
+      max-width: 700px;
+    }
+    .section-title span { color: #7ecba0; }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 60px;
+    }
+    .hero-sub {
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(232, 228, 223, 0.5);
+      margin-bottom: 24px;
+    }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 10vw, 7rem);
+      font-weight: 400;
+      line-height: 1.05;
+      max-width: 900px;
+    }
+    .hero-title .line { display: block; }
+    .hero-title .line:nth-child(2) {
+      padding-left: 2em;
+      color: #7ecba0;
+      font-style: italic;
+    }
+    .hero-desc {
+      font-size: 1.05rem;
+      font-weight: 300;
+      line-height: 1.7;
+      max-width: 440px;
+      margin-top: 40px;
+      color: rgba(232, 228, 223, 0.65);
+    }
+    .hero-cta {
+      display: inline-block;
+      margin-top: 50px;
+      padding: 16px 48px;
+      border: 1px solid rgba(232, 228, 223, 0.25);
+      border-radius: 50px;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #e8e4df;
+      transition: all 0.4s;
+      width: fit-content;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #7ecba0, #3a8b6f);
+      opacity: 0;
+      transition: opacity 0.4s;
+      border-radius: 50px;
+    }
+    .hero-cta:hover::before { opacity: 1; }
+    .hero-cta span { position: relative; z-index: 1; }
+    .hero-cta:hover { border-color: #7ecba0; }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0.4;
+      animation: float 3s ease-in-out infinite;
+    }
+    .scroll-indicator span { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; }
+    .scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, #e8e4df, transparent); }
+    @keyframes float {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-8px); }
+    }
+
+    /* Upcycling */
+    .upcycling { background: linear-gradient(180deg, transparent 0%, rgba(126, 203, 160, 0.03) 50%, transparent 100%); }
+    .upc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .upc-visual {
+      position: relative; height: 500px; border-radius: 24px; overflow: hidden;
+      background: linear-gradient(145deg, #1a2a22, #0f1a14);
+      border: 1px solid rgba(126, 203, 160, 0.08);
+    }
+    .upc-visual-inner { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+    .upc-orb {
+      width: 280px; height: 280px; border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #7ecba0, #2a6d4a, #0f1a14);
+      filter: blur(40px);
+      animation: orbPulse 6s ease-in-out infinite;
+    }
+    .upc-orb-2 {
+      position: absolute; width: 180px; height: 180px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(200, 240, 224, 0.15), transparent);
+      border: 1px solid rgba(126, 203, 160, 0.15);
+      top: 20%; right: 15%;
+      animation: orbFloat 8s ease-in-out infinite;
+    }
+    @keyframes orbPulse {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.15); opacity: 1; }
+    }
+    @keyframes orbFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-30px) rotate(180deg); }
+    }
+    .upc-text h3 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 400; margin-bottom: 24px; }
+    .upc-text p { font-size: 0.95rem; line-height: 1.8; color: rgba(232, 228, 223, 0.65); margin-bottom: 32px; }
+    .pill {
+      display: inline-block; padding: 6px 18px;
+      border: 1px solid rgba(126, 203, 160, 0.2); border-radius: 50px;
+      font-size: 0.7rem; letter-spacing: 0.05em; color: #7ecba0;
+      margin-right: 8px; margin-bottom: 8px;
+    }
+
+    /* Limited Edition */
+    .limited { background: linear-gradient(180deg, transparent, rgba(200, 240, 224, 0.02), transparent); }
+    .le-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .le-card {
+      position: relative; height: 520px; border-radius: 20px; overflow: hidden;
+      background: linear-gradient(160deg, #1a1a24, #0f0f18);
+      border: 1px solid rgba(255,255,255,0.04);
+      transition: transform 0.5s ease, border-color 0.4s;
+      cursor: none;
+      display: flex; flex-direction: column; justify-content: flex-end; padding: 32px;
+    }
+    .le-card:hover { transform: translateY(-8px); border-color: rgba(126, 203, 160, 0.2); }
+    .le-card-bg { position: absolute; inset: 0; transition: transform 0.6s ease; z-index: 0; }
+    .le-card:hover .le-card-bg { transform: scale(1.05); }
+    .le-card .orb-bg { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.3; transition: all 0.6s; }
+    .le-card:nth-child(1) .orb-bg { width: 300px; height: 300px; background: radial-gradient(circle, #7ecba0, transparent); top: -20%; right: -20%; }
+    .le-card:nth-child(2) .orb-bg { width: 250px; height: 250px; background: radial-gradient(circle, #c8b07e, transparent); bottom: -10%; left: -10%; }
+    .le-card:nth-child(3) .orb-bg { width: 280px; height: 280px; background: radial-gradient(circle, #a07ecb, transparent); top: 10%; right: -30%; }
+    .le-card-content { position: relative; z-index: 1; }
+    .le-card-content .edition { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(232, 228, 223, 0.4); margin-bottom: 12px; }
+    .le-card-content h4 { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 400; margin-bottom: 8px; }
+    .le-card-content .price { font-size: 0.9rem; color: #7ecba0; font-weight: 300; }
+
+    /* Emerging Designers */
+    .designers { background: linear-gradient(180deg, transparent, rgba(126, 203, 160, 0.02), transparent); }
+    .des-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .des-card {
+      text-align: center; padding: 40px 20px; border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.04);
+      background: linear-gradient(160deg, rgba(255,255,255,0.02), transparent);
+      transition: all 0.4s; cursor: none;
+    }
+    .des-card:hover { border-color: rgba(126, 203, 160, 0.15); transform: translateY(-4px); }
+    .des-avatar {
+      width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 20px;
+      background: linear-gradient(135deg, #1a2a22, #0f1a14);
+      border: 1px solid rgba(126, 203, 160, 0.1);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif; font-size: 2rem; color: #7ecba0;
+    }
+    .des-card h4 { font-size: 1rem; font-weight: 500; margin-bottom: 6px; }
+    .des-card .origin { font-size: 0.75rem; color: rgba(232, 228, 223, 0.4); margin-bottom: 12px; }
+    .des-card p { font-size: 0.8rem; color: rgba(232, 228, 223, 0.55); line-height: 1.6; }
+    .des-card .tag {
+      display: inline-block; margin-top: 16px; padding: 4px 14px; border-radius: 50px;
+      font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
+      border: 1px solid rgba(126, 203, 160, 0.15); color: #7ecba0;
+    }
+
+    /* Experiences */
+    .experiences { background: linear-gradient(180deg, transparent, rgba(126, 203, 160, 0.04), transparent); }
+    .exp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .exp-card {
+      position: relative; height: 340px; border-radius: 24px; overflow: hidden; padding: 40px;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      border: 1px solid rgba(255,255,255,0.04);
+      background: linear-gradient(160deg, rgba(255,255,255,0.02), transparent);
+      transition: all 0.4s; cursor: none;
+    }
+    .exp-card:nth-child(1) { height: 400px; }
+    .exp-card:nth-child(4) { height: 400px; }
+    .exp-card:hover { border-color: rgba(126, 203, 160, 0.15); transform: translateY(-4px); }
+    .exp-card .exp-bg { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.15; transition: all 0.6s; }
+    .exp-card:nth-child(1) .exp-bg { width: 400px; height: 400px; background: radial-gradient(circle, #7ecba0, transparent); top: -50%; right: -20%; }
+    .exp-card:nth-child(2) .exp-bg { width: 300px; height: 300px; background: radial-gradient(circle, #c8b07e, transparent); bottom: -30%; left: -20%; }
+    .exp-card:nth-child(3) .exp-bg { width: 350px; height: 350px; background: radial-gradient(circle, #a07ecb, transparent); top: 10%; left: 30%; }
+    .exp-card:nth-child(4) .exp-bg { width: 380px; height: 380px; background: radial-gradient(circle, #7ecba0, transparent); bottom: -40%; right: -10%; }
+    .exp-card-content { position: relative; z-index: 1; }
+    .exp-card-content .exp-icon { font-size: 2rem; margin-bottom: 16px; }
+    .exp-card-content h4 { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 400; margin-bottom: 10px; }
+    .exp-card-content p { font-size: 0.85rem; color: rgba(232, 228, 223, 0.55); line-height: 1.7; max-width: 320px; }
+
+    /* Newsletter */
+    .newsletter { min-height: auto; text-align: center; padding: 100px 60px; border-top: 1px solid rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .newsletter h2 { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 400; margin-bottom: 20px; }
+    .newsletter p { color: rgba(232, 228, 223, 0.55); font-size: 0.95rem; margin-bottom: 40px; }
+    .newsletter-form { display: flex; justify-content: center; gap: 12px; max-width: 480px; margin: 0 auto; }
+    .newsletter-form input {
+      flex: 1; padding: 16px 24px; border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03);
+      font-family: 'Inter', sans-serif; font-size: 0.85rem; color: #e8e4df;
+      outline: none; transition: border-color 0.3s;
+    }
+    .newsletter-form input:focus { border-color: #7ecba0; }
+    .newsletter-form input::placeholder { color: rgba(232, 228, 223, 0.3); }
+    .newsletter-form button {
+      padding: 16px 36px; border-radius: 50px; border: none;
+      background: #7ecba0; color: #0a0a0f;
+      font-family: 'Inter', sans-serif; font-size: 0.75rem;
+      letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600;
+      cursor: pointer; transition: background 0.3s, transform 0.3s;
+    }
+    .newsletter-form button:hover { background: #9edcb8; transform: scale(1.02); }
+
+    /* Footer */
+    footer {
+      position: relative; z-index: 2; padding: 60px 60px 40px;
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+    footer h5 { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(232, 228, 223, 0.3); margin-bottom: 20px; }
+    footer p, footer a { font-size: 0.85rem; color: rgba(232, 228, 223, 0.5); line-height: 1.8; display: block; transition: color 0.3s; }
+    footer a:hover { color: #7ecba0; }
+    .footer-brand .logo { font-size: 1.4rem; display: inline-block; margin-bottom: 16px; }
+    .footer-brand p { max-width: 280px; }
+    .footer-bottom {
+      position: relative; z-index: 2; padding: 24px 60px;
+      display: flex; justify-content: space-between;
+      font-size: 0.7rem; color: rgba(232, 228, 223, 0.25);
+      border-top: 1px solid rgba(255,255,255,0.03);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .upc-grid { grid-template-columns: 1fr; gap: 40px; }
+      .le-grid { grid-template-columns: repeat(2, 1fr); }
+      .des-grid { grid-template-columns: repeat(2, 1fr); }
+      footer { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      section { padding: 80px 24px; }
+      .hero { padding: 0 24px; }
+      nav { padding: 20px 24px; }
+      .nav-links { display: none; }
+      .nav-burger { display: flex; }
+      .section-title { font-size: 2.2rem; }
+      .le-grid { grid-template-columns: 1fr; }
+      .le-card { height: 400px; }
+      .des-grid { grid-template-columns: 1fr; }
+      .exp-grid { grid-template-columns: 1fr; }
+      .exp-card:nth-child(1), .exp-card:nth-child(4) { height: 340px; }
+      footer { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+      .newsletter { padding: 80px 24px; }
+      .newsletter-form { flex-direction: column; }
+      .newsletter-form button { width: 100%; }
+      .cursor, .cursor-follower { display: none; }
+      body { cursor: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-follower" id="cursorFollower"></div>
+  <canvas id="bg-canvas"></canvas>
+  <div class="noise-overlay"></div>
+
+  <nav>
+    <a href="#" class="logo">novi<span>ciado</span></a>
+    <ul class="nav-links">
+      <li><a href="#upcycling">Upcycling</a></li>
+      <li><a href="#limited">Collection</a></li>
+      <li><a href="#designers">Designers</a></li>
+      <li><a href="#experiences">Experiences</a></li>
+    </ul>
+    <div class="nav-burger"><span></span><span></span><span></span></div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-sub">Sustainable fashion collective</div>
+    <h1 class="hero-title" data-parallax="0.04">
+      <span class="line">Fashion that</span>
+      <span class="line">regenerates</span>
+    </h1>
+    <p class="hero-desc" data-parallax="0.02">
+      Where craft meets consciousness. A platform for the new wave of designers shaping fashion's relationship with the planet.
+    </p>
+    <a href="#upcycling" class="hero-cta"><span>Explore the collection</span></a>
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <section id="upcycling" class="upcycling">
+    <div class="section-label">/ 01</div>
+    <h2 class="section-title" data-parallax="0.03">Upcycling <span>Collection</span></h2>
+    <div class="upc-grid">
+      <div class="upc-visual">
+        <div class="upc-visual-inner">
+          <div class="upc-orb"></div>
+          <div class="upc-orb-2"></div>
+        </div>
+      </div>
+      <div class="upc-text">
+        <h3>Waste becomes wearable</h3>
+        <p>Every piece in our upcycling collection is born from discarded materials — deadstock fabrics, vintage garments, and industrial offcuts — reimagined through zero-waste pattern cutting and artisanal techniques.</p>
+        <div>
+          <span class="pill">Zero-waste</span>
+          <span class="pill">Deadstock fabrics</span>
+          <span class="pill">Hand-finished</span>
+          <span class="pill">Biodegradable</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="limited" class="limited">
+    <div class="section-label">/ 02</div>
+    <h2 class="section-title" data-parallax="0.03">Limited <span>Edition</span></h2>
+</span>    <div class="le-grid">
+      <div class="le-card" data-tilt>
+        <div class="le-card-bg"><div class="orb-bg"></div></div>
+        <div class="le-card-content">
+          <div class="edition">Edition of 12</div>
+          <h4>Orch</h4>id Weave</h4>
+          <div class="price">€420</div>
+        </div>
+      </div>
+      <div class="le-card" data-tilt>
+        <div class="le-card-bg"><div class="orb-bg"></div></div>
+        <div class="le-card-content">
+          <div class="edition">Edition of 8</div>
+          <h4>V</h4>ermillion Thread</h4>
+          <div class="price">€680</div>
+        </div>
+      </div>
+      <div class="le-card" data-tilt>
+        <div class="le-card-bg"><div class="orb-bg"></div></div>
+        <div class="le-card-content">
+          <div class="edition">Edition of 20</div>
+          <h4>E</h4>clipse Coat</h4>
+          <div class="price">€890</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="designers" class="designers">
+    <div class="section-label">/ 03</div>
+    <h2 class="section-title" data-parallax="0.03">Emerging <span></span>Designers</span></h2>
+    <div class="des-grid">
+      <div class="des-card" data-tilt>
+        <div class="des-avatar">A</div>
+        <h4>Amara</h4> Diallo</h4>
+        <div class="origin">Dakar · Senegal</div>
+        <p></p>Natural dye techniques and handwoven textiles from West African traditions.</p>
+        <div class="tag">Textile Art</div>
+      </div>
+      <div class="des-card" data-tilt>
+        <div class="des-avatar">K</div>
+        <h4>Kai</h4> Yamamoto</h4>
+        <div class="origin">Tokyo · Japan</div>
+        <p>Deconstructed</p> silhouettes from reclaimed kimono silk and vintage obi.</p>
+        <div class="tag">Deconstruction</div>
+      </div>
+      <div class="des-card" data-tilt>
+        <div class="des-avatar">S</div>
+        <h4>Sofia Reyes</h4>
+        <div class="origin">Mexico City · Mexico</div>
+        <p>Cactus leather and agave fiber textiles grown in collaboration with local farmers.</p>
+        <div class="tag">Bio-materials</div>
+      </div>
+      <div class="des-card" data-tilt>
+        <div class="des-avatar">E</div>
+        <h4></h4>Elias Voss</h4>
+        <div class="origin">Copenhagen · Denmark</div>
+        <p>Modular fashion systems designed for dis</p>assembly and infinite re-wear.</p>
+        <div class="tag">Modular</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="experiences" class="experiences">
+    <div class="section-label">/ 04</div>
+    <h2 class="section-title" data-parallax="0.03">Experiences <span>&amp; Events</span></h2>
+    <div class="exp-grid">
+      <div class="exp-card" data-tilt>
+        <div class="exp-bg"></div>
+        <div class="exp-card-content">
+          <div class="exp-icon">&#9753;</div>
+          <h4>Mending Circles</h4></h4>
+          <p>Monthly workshops where community</p> members learn visible mending, darning, and sashiko stitching to extend the life of their garments.</p>
+        </div>
+      </div>
+      <div class="exp-card" data-tilt>
+        <div class="exp-bg"></div>
+        <div class="exp-card-content">
+          <div class="exp-icon">&#9733;</div>
+          <h4></h4>Runway: Reclaimed</h4>
+          <p>A biannual showcase where our emerging designers present collections made entirely from post-consumer and deadstock materials.</p>
+        </div>
+      </div>
+      <div class="exp-card" data-tilt>
+        <div class="exp-bg"></div>
+        <div class="exp-card-content">
+          <div class="exp-icon">&#9731;</div>
+          <h4>Material</h4> Lab</h4>
+          <p>An interactive space</p> to touch, drape, and learn about next-gen materials — from mushroom leather to nettle fiber.</p>
+        </div>
+      </div>
+      <div class="exp-card" data-tilt>
+        <div class="exp-bg"></div>
+        <div class="exp-card-content">
+          <div class="exp-icon">&#9830;</div>
+          <h4>Swap &</h4>amp; Symposium</h4>
+          <p>A seasonal garment swap paired with conversations on circular economy, policy, and the future of fashion.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="newsletter">
+    <h2>Stay</h2> <span style="color:#7ecba0;">connected</span></h2>
+    <p>Be the</p> first to know about new collections, designer drops, and events.</p>
+    <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Thank you for subscribing!');">
+      <input type="email" placeholder="Your email address" required />
+      <button type="submit">Subscribe</button>
+    </form>
+  </section>
+
+  <footer>
+    <div class="footer-brand">
+      <a href="#" class="logo">novi<span>ci</span>ado</span></a>
+      <p>Shaping</p> a future where fashion and ecology are inseparable. Based in Lisbon, rooted in the world.</p>
+    </div>
+    <div>
+      <h5>Collections</h5></h5>
+      <a href="#upcycling">Upcycling</a>
+      <a href="#limited">Limited Edition</a>
+      <a href="#designers">Designers</a>
+    </div>
+    <div>
+      <h5>Connect</h5>
+</h5>      <a href="#">Instagram</a>
+      <a href="#">Pinterest</a>
+      <a href="#">Newsletter</a>
+    </div>
+    <div>
+      <h5></h5>Info</h5>
+      <a href="#">About</a>
+      <a href="#">Sustainability</a>
+      <a href="#">Contact</a>
+    </div>
+  </footer>
+  <div class="footer-bottom">
+    <span>&copy; 2026 Noviciado — All rights reserved</span>
+    <span>Crafted with intention</span>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let mouseX = 0, mouseY = 0;
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 0.5;
+        this.speedX = (Math.random() - 0.5) * 0.15;
+        this.speedY = (Math.random() - 0.5) * 0.15;
+        this.opacity = Math.random() * 0.5 + 0.1;
+        this.hue = 140 + Math.random() * 40;
+      }
+      update() {
+        const dx = mouseX - this.x;
+        const dy = mouseY - this.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 250) {
+          const force = (250 - dist) / 250 * 0.03;
+          this.x -= dx * force;
+          this.y -= dy * force;
+        }
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < -20 || this.x > canvas.width + 20 || this.y < -20 || this.y > canvas.height + 20) {
+          this.reset();
+        }
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${this.hue}, 50%, 65%, ${this.opacity})`;
+        ctx.fill();
+      }
+    }
+
+    const particleCount = Math.min(80, Math.floor(canvas.width * canvas.height / 15000));
+    for (let i = 0; i < particleCount; i++) particles.push(new Particle());
+
+    let connections = [];
+    function updateConnections() {
+      connections = [];
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 160) connections.push({ i, j, dist });
+        }
+      }
+    }
+
+    function animateBg() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      updateConnections();
+      connections.forEach(c => {
+        const p1 = particles[c.i], p2 = particles[c.j];
+        const alpha = (1 - c.dist / 160) * 0.2;
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.strokeStyle = `hsla(150, 40%, 60%, ${alpha})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      });
+      requestAnimationFrame(animateBg);
+    }
+    animateBg();
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      const cursor = document.getElementById('cursor');
+      const follower = document.getElementById('cursorFollower');
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      follower.style.left = e.clientX + 'px';
+      follower.style.top = e.clientY + 'px';
+    });
+
+    document.querySelectorAll('a, button, .le-card, .des-card, .exp-card, .hero-cta').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        document.getElementById('cursor').classList.add('cursor-hover');
+        document.getElementById('cursorFollower').classList.add('cursor-follower-hover');
+      });
+      el.addEventListener('mouseleave', () => {
+        document.getElementById('cursor').classList.remove('cursor-hover');
+        document.getElementById('cursorFollower').classList.remove('cursor-follower-hover');
+      });
+    });
+
+    const parallaxEls = document.querySelectorAll('[data-parallax]');
+    window.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+      parallaxEls.forEach(el => {
+        const factor = parseFloat(el.dataset.parallax);
+        el.style.transform = `translate(${x * factor * 30}px, ${y * factor * 30}px)`;
+      });
+    });
+
+    const tiltCards = document.querySelectorAll('[data-tilt]');
+    tiltCards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = -(y - centerY) / centerY * 8;
+        const rotateY = (x - centerX) / centerX * 8;
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02,1.02,1.02)`;
+        card.style.transition = 'transform 0.08s ease';
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1,1,1)';
+        card.style.transition = 'transform 0.5s ease';
+      });
+    });
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('section .section-title, .upc-grid, .le-grid, .des-grid, .exp-grid').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+      revealObserver.observe(el);
+    });
+
+    setTimeout(() => {
+      document.querySelectorAll('.hero .hero-title, .hero .hero-desc, .hero .hero-cta, .hero-sub').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+      });
+      requestAnimationFrame(() => {
+        document.querySelectorAll('.hero .hero-title, .hero .hero-desc, .hero .hero-cta, .hero-sub').forEach((el, i) => {
+          setTimeout(() => {
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+          }, i * 200 + 300);
+        });
+      });
+    }, 100);
+
+    console.log('Noviciado — Sustainable fashion for a regenerative future.');
+  </script>
+</body>
+</html>
